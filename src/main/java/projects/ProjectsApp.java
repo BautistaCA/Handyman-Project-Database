@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
+import com.mysql.cj.protocol.x.SyncFlushDeflaterOutputStream;
+
 import projects.entity.Project;
 import projects.exception.DbException;
 import projects.service.ProjectService;
@@ -116,6 +118,7 @@ public class ProjectsApp {
 	}
 
 	private void printOperation() {
+		System.out.println("\nThese are the available selections. Press the Enter key to quit:");
 		operations.forEach(line -> System.out.println("   " + line));
 
 	}
