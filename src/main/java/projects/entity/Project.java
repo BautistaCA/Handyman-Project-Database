@@ -16,7 +16,7 @@ public class Project {
   private String projectName;
   private BigDecimal estimatedHours;
   private BigDecimal actualHours;
-  private Integer difficulty;
+  private Integer difficulty; //Changed from Integer to String
   private String notes;
 
   private List<Material> materials = new LinkedList<>();
