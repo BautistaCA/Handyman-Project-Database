@@ -10,14 +10,14 @@ project_id INT AUTO_INCREMENT NOT NULL,
 project_name VARCHAR(128) NOT NULL,
 estimated_hours DECIMAL(7, 2),
 actual_hours DECIMAL (7, 2),
-difficulty TEXT,
+difficulty INT,
 notes Text,
 PRIMARY KEY (project_id)
 );
 
 CREATE TABLE category (
 category_id INT AUTO_INCREMENT NOT NULL,
-category_name VARCHAR(64) NOT NULL,
+category_name VARCHAR(128) NOT NULL,
 PRIMARY KEY (category_id)
 );
 

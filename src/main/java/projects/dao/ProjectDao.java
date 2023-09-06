@@ -40,8 +40,7 @@ public class ProjectDao extends DaoBase {
 				setParameter(stmt, 1, project.getProjectName(), String.class);
 				setParameter(stmt, 2, project.getEstimatedHours(), BigDecimal.class);
 				setParameter(stmt, 3, project.getActualHours(), BigDecimal.class);
-				setParameter(stmt, 4, project.getDifficulty(), Integer.class); //Dont know y error starts here.
-				// ^^^ had to change this to the string class to get projects.add(extract(rs, Project.class)); to work ^^^
+				setParameter(stmt, 4, project.getDifficulty(), Integer.class); //Fixed the issue with a mentor
 				setParameter(stmt, 5, project.getNotes(), String.class);
 
 				stmt.executeUpdate();
@@ -75,8 +74,7 @@ public class ProjectDao extends DaoBase {
 					while (rs.next()) {
 					
 						projects.add(extract(rs, Project.class));
-						//^^ idk y extract didnt work
-						//^^ I have to change "difficulty" to String since Integer doesn't work for some reason
+						//^^ Fixed the Issue
 						
 				
 				//--This works fine without changing difficulty to String--
@@ -158,7 +156,6 @@ public class ProjectDao extends DaoBase {
 
 				while (rs.next()) {
 					//this should work when fetchAllProjects is running correctly,
-					// it for sure work when difficulty is set to String
 					categories.add(extract(rs, Category.class));
 				}
 				return categories;
@@ -178,7 +175,7 @@ public class ProjectDao extends DaoBase {
 
 				while (rs.next()) {
 					//this should work when fetchAllProjects is running correctly,
-					// it for sure work when difficulty is set to String
+
 					steps.add(extract(rs, Step.class));
 			
 				
@@ -202,7 +199,7 @@ public class ProjectDao extends DaoBase {
 
 				while (rs.next()) {
 					//this should work when fetchAllProjects is running correctly,
-					// it for sure work when difficulty is set to String
+	
 					materials.add(extract(rs, Material.class));
 
 				}
