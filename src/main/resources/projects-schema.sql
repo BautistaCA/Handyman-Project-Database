@@ -47,3 +47,19 @@ FOREIGN KEY (project_id) REFERENCES project (project_id) ON DELETE CASCADE,
 FOREIGN KEY (category_id) REFERENCES category (category_id) ON DELETE CASCADE,
 UNIQUE KEY (project_id, category_id)
 );
+
+insert into project (project_name, estimated_hours, actual_hours, difficulty, notes)
+values ('Test Project', 4, 3, 2, 'This is a Test')
+;
+insert into material (project_id, material_name, num_required, cost)
+values (1, 'Test Material', 1, 0)
+;
+insert into step (project_id, step_text, step_order)
+values (1, "This is a Test Step", 1)
+;
+insert into category (category_id, category_name)  
+values (1, "Test Category")
+;
+insert into project_category (project_id, category_id)  
+values (1, 1)
+;

@@ -40,7 +40,7 @@ public class ProjectDao extends DaoBase {
 				setParameter(stmt, 1, project.getProjectName(), String.class);
 				setParameter(stmt, 2, project.getEstimatedHours(), BigDecimal.class);
 				setParameter(stmt, 3, project.getActualHours(), BigDecimal.class);
-				setParameter(stmt, 4, project.getDifficulty(), Integer.class); //Fixed the issue with a mentor
+				setParameter(stmt, 4, project.getDifficulty(), Integer.class); // Fixed the issue with a mentor
 				setParameter(stmt, 5, project.getNotes(), String.class);
 
 				stmt.executeUpdate();
@@ -54,8 +54,7 @@ public class ProjectDao extends DaoBase {
 				rollbackTransaction(conn);
 				throw new DbException(e);
 			}
-		} 
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			throw new DbException(e);
 
 		}
@@ -63,7 +62,7 @@ public class ProjectDao extends DaoBase {
 
 	public List<Project> fetchAllProjects() {
 		String sql = "SELECT * FROM " + PROJECT_TABLE + " ORDER BY project_name";
-		
+
 		try (Connection conn = DbConnection.getConnection()) {
 			startTransaction(conn);
 
@@ -72,23 +71,22 @@ public class ProjectDao extends DaoBase {
 					List<Project> projects = new LinkedList<>();
 
 					while (rs.next()) {
-					
+
 						projects.add(extract(rs, Project.class));
-						//^^ Fixed the Issue
-						
-				
-				//--This works fine without changing difficulty to String--
-						//		Project Project = new Project();
+						// ^^ Fixed the Issue
 
-				//		Project.setActualHours(rs.getBigDecimal("actual_hours"));
-				//		Project.setDifficulty(rs.getObject("difficulty", Integer.class));
-				//		Project.setEstimatedHours(rs.getBigDecimal("estimated_hours"));
-				//		Project.setNotes(rs.getString("notes"));
-				//		Project.setProjectId(rs.getObject("project_id", Integer.class));
-				//		Project.setProjectName(rs.getString("project_name"));
+						// --This works fine --
+						// Project Project = new Project();
 
-				//		projects.add(Project);
-						//---------------------
+						// Project.setActualHours(rs.getBigDecimal("actual_hours"));
+						// Project.setDifficulty(rs.getObject("difficulty", Integer.class));
+						// Project.setEstimatedHours(rs.getBigDecimal("estimated_hours"));
+						// Project.setNotes(rs.getString("notes"));
+						// Project.setProjectId(rs.getObject("project_id", Integer.class));
+						// Project.setProjectName(rs.getString("project_name"));
+
+						// projects.add(Project);
+						// ---------------------
 					}
 					return projects;
 				}
@@ -152,10 +150,10 @@ public class ProjectDao extends DaoBase {
 			setParameter(stmt, 1, projectId, Integer.class);
 
 			try (ResultSet rs = stmt.executeQuery()) {
-				List<Category> categories = new LinkedList<>(); //testing this
+				List<Category> categories = new LinkedList<>(); // testing this
 
 				while (rs.next()) {
-					//this should work when fetchAllProjects is running correctly,
+					// this should work when fetchAllProjects is running correctly,
 					categories.add(extract(rs, Category.class));
 				}
 				return categories;
@@ -164,22 +162,20 @@ public class ProjectDao extends DaoBase {
 	}
 
 	private List<Step> fetchProjectSteps(Connection conn, Integer projectId) throws SQLException {
-	
+
 		String sql = "SELECT * FROM " + STEP_TABLE + " WHERE project_id = ?";
-	
+
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			setParameter(stmt, 1, projectId, Integer.class);
 
 			try (ResultSet rs = stmt.executeQuery()) {
-				List<Step> steps = new LinkedList<>(); //testing this
+				List<Step> steps = new LinkedList<>(); // testing this
 
 				while (rs.next()) {
-					//this should work when fetchAllProjects is running correctly,
+					// this should work when fetchAllProjects is running correctly,
 
 					steps.add(extract(rs, Step.class));
-			
-				
-				
+
 				}
 				return steps;
 			}
@@ -187,19 +183,18 @@ public class ProjectDao extends DaoBase {
 	}
 
 	private List<Material> fetchProjectMaterials(Connection conn, Integer projectId) throws SQLException {
-	
-		String sql =
-	 "SELECT * FROM " + MATERIAL_TABLE + " WHERE project_id = ?";
-	
+
+		String sql = "SELECT * FROM " + MATERIAL_TABLE + " WHERE project_id = ?";
+
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			setParameter(stmt, 1, projectId, Integer.class);
 
 			try (ResultSet rs = stmt.executeQuery()) {
-				List<Material> materials = new LinkedList<>(); //testing this
+				List<Material> materials = new LinkedList<>(); // testing this
 
 				while (rs.next()) {
-					//this should work when fetchAllProjects is running correctly,
-	
+					// this should work when fetchAllProjects is running correctly,
+
 					materials.add(extract(rs, Material.class));
 
 				}
@@ -208,4 +203,60 @@ public class ProjectDao extends DaoBase {
 		}
 	}
 
+	public boolean modifyProjectDetails(Project project) {
+	// @formatter:off
+		String sql = "" + "UPDATE " + PROJECT_TABLE + " SET "
+				   + "project_name = ?, " + "estimated_hours = ?, "
+				   + "actual_hours = ?, " + "difficulty = ?, "
+				   + "notes = ? " + "WHERE project_id = ?";
+	// @formatter:on
+		try (Connection conn = DbConnection.getConnection()) {
+			startTransaction(conn);
+			try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+				setParameter(stmt, 1, project.getProjectName(), String.class);
+				setParameter(stmt, 2, project.getEstimatedHours(), BigDecimal.class);
+				setParameter(stmt, 3, project.getActualHours(), BigDecimal.class);
+				setParameter(stmt, 4, project.getDifficulty(), Integer.class); // Fixed the issue with a mentor
+				setParameter(stmt, 5, project.getNotes(), String.class);
+				setParameter(stmt, 6, project.getProjectId(), Integer.class);
+
+				boolean result = stmt.executeUpdate() == 1;
+
+				commitTransaction(conn);
+
+				return result;
+			} catch (Exception e) {
+				rollbackTransaction(conn);
+				throw new DbException(e);
+			}
+
+		} catch (SQLException e) {
+			throw new DbException(e);
+		}
+	}
+
+	public boolean deleteProject(Integer projectId) {
+		// formatter:off
+		String sql = "DELETE FROM " + PROJECT_TABLE + " WHERE project_id = ?";
+		// formatter:on
+		try (Connection conn = DbConnection.getConnection()) {
+			startTransaction(conn);
+			try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+				setParameter(stmt, 1, projectId, Integer.class);
+
+				boolean result = stmt.executeUpdate() == 1;
+
+				commitTransaction(conn);
+
+				return result;
+			} catch (Exception e) {
+				rollbackTransaction(conn);
+				throw new DbException(e);
+			}
+
+		} catch (SQLException e) {
+			throw new DbException(e);
+		}
+
+	}
 }
